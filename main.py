@@ -51,7 +51,7 @@ def save_password():
 
             except:
                 with open('data_json', 'w') as filename:
-                    json.dump(data, filename, indent=4)
+                    json.dump(new_data, filename, indent=4)
 
             else:
                 data.update(new_data)
@@ -64,6 +64,23 @@ def save_password():
                 website_entry.delete(0,  END)
                 email_entry.delete(0, END)
                 password_entry.delete(0, END)
+
+
+def find_password():
+    website = website_entry.get()
+    try:
+        with open('data_json') as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+            messagebox.showerror(title="Error", message="No data found")
+    else:
+            if website in data:
+                email = data[website]["email"]
+                password = data[website]["password"]
+                messagebox.showinfo(title=website, message=f"Email: {email}\nPassword: {password}")
+
+            else:
+                messagebox.showerror(title="Error", message=f"No details currently exists for {website}.")
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -89,8 +106,8 @@ password_label.grid(column=0, row=3)
 
 
 
-website_entry = Entry(width=38)
-website_entry.grid(column=1, row=1, columnspan= 2)
+website_entry = Entry(width=21)
+website_entry.grid(column=1, row=1)
 
 email_entry = Entry(width= 38)
 email_entry.grid(column =1,  row=2, columnspan= 2)
@@ -106,6 +123,9 @@ generate_password.grid(column = 2, row=3)
 
 add = Button(text="ADD", width=36, command= save_password)
 add.grid(column =1, columnspan=2, row=4)
+
+search = Button(text="Search", width=13, command=find_password)
+search.grid(column=2, row=1)
 
 
 window.mainloop()
